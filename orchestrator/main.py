@@ -61,7 +61,8 @@ class StoreResponse(BaseModel):
     domain: str
     status: str
     helm_release: str
-    created_at: str
+    created_at: str | None = None
+
 
 # In-memory tracking (replace with DB for production)
 stores: Dict[str, Dict[str, Any]] = {}
