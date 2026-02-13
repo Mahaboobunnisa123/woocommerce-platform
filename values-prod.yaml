@@ -1,0 +1,28 @@
+# Production k3s values
+storeName: "OVERRIDE_ME"
+wordpress:
+  image: "wordpress:6.0"
+  replicas: 2  # Higher availability
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "1000m"
+      memory: "2Gi"
+
+mariadb:
+  storage:
+    storageClass: "local-path"  # k3s default
+    size: "20Gi"  # Larger for production
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "1000m"
+      memory: "2Gi"
+
+ingress:
+  host: "OVERRIDE_ME.yourdomain.com"
+  enabled: true

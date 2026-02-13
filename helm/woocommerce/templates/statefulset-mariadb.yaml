@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.storeName }}-mariadb
+  labels:
+    app: mariadb
+    store: {{ .Values.storeName }}
+spec:
+  serviceName: {{ .Values.storeName }}-mariadb
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+      store: {{ .Values.storeName }}
+      
+  template:
+    metadata:
+      labels:
+        app: mariadb
+        store: {{ .Values.storeName }}
+    spec:
+      containers:
+      - name: mariadb
+        image: {{ .Values.mariadb.image }}
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.storeName }}-db-secret
+              key: root-password
+        - name: MYSQL_DATABASE
+          value: {{ .Values.mariadb.database }}
+        - name: MYSQL_USER
+          value: {{ .Values.mariadb.user }}
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.storeName }}-db-secret
+              key: user-password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+        resources:
+          requests:
+            cpu: {{ .Values.mariadb.resources.requests.cpu }}
+            memory: {{ .Values.mariadb.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.mariadb.resources.limits.cpu }}
+            memory: {{ .Values.mariadb.resources.limits.memory }}
+        livenessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+            - -h
+            - localhost
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+            - -h
+            - localhost
+          initialDelaySeconds: 5
+          periodSeconds: 5
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: {{ .Values.mariadb.storage.storageClass }}
+      resources:
+        requests:
+          storage: {{ .Values.mariadb.storage.size }}

@@ -1,0 +1,13 @@
+# Local Docker Desktop values
+storeName: "my-local-store"
+wordpress:
+  image: "wordpress:6.0"
+
+mariadb:
+  storage:
+    storageClass: "hostpath"  # Docker Desktop default
+    size: "5Gi"  # Smaller for local
+
+ingress:
+  host: ""
+  enabled: true

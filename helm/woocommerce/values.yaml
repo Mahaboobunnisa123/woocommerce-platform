@@ -1,0 +1,29 @@
+# Default values for woocommerce chart
+storeName: "default-store"
+wordpress:
+  image: "wordpress:6.0"
+  replicas: 1
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+mariadb:
+  image: "mariadb:10.6"
+  database: "wordpress"
+  user: "wordpress" # Note: In production, use a more secure username
+  storage:
+    size: "10Gi"
+    storageClass: "hostpath"  # Use a suitable storage class for production
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+ingress:
+  host: "store.localhost"
+  enabled: true
