@@ -39,8 +39,8 @@ function App() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          store_name: storeName,
-          domain: domain,
+          store_name: storeName.toLowerCase(),
+          domain: domain.toLowerCase(),
           environment: "local",
         }),
       });
@@ -85,7 +85,7 @@ function App() {
     <div className="app-shell">
       <div className="container">
         <header className="header">
-          <h1>Store Provisioning Dashboard</h1>
+          <h1>Woocommerce Store Provisioning Dashboard</h1>
         </header>
 
         <section className="create-section card">
